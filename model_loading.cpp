@@ -92,8 +92,7 @@ int main()
     //ambient Strength
     float ambientStrength = 0.239f;
     glm::vec3 ambientColour = glm::vec3(0.00f, 0.668f, 1.0f);
-    // diffuse light position
-
+    
     // directional light
     glm::vec3 lightDirection(-0.1f, -1.0f, -0.7f);
     glm::vec3 dirLightColour = glm::vec3(0.515f, 0.715f, 1.0f);
@@ -177,19 +176,18 @@ int main()
     Shader ourShader("shaders/1.model_loading.vs", "shaders/1.model_loading.fs");
     Shader skyboxShader("shaders/skybox.vs", "shaders/skybox.fs");
     
-    // loading Snowman Model 1 (in seperate parts)
-    // make snowman1Body is the main model and the rest are the parts
-    Model snowman1Body("models/snowman/snowmanNoArms.obj");
+    // Loading Robot (all parts)
+    // Robot1Body is the main model, the rest are objects attached
+    Model robot1Body("models/robot/robot_body.obj");
     
-    // adding the child nodes to snowman1Body
-    Model snowman1LeftArm("models/snowman/snowmanLeftArm.obj");
-    Model snowman1RightArm("models/snowman/snowmanRightArm.obj");
+    // Adding child parts
+    Model robot1LeftArm("models/robot/robot_armL.obj");
+    Model robot1RightArm("models/robot/robot_armR.obj");
+    Model robot1Head("models/robot/robot_head.obj");
 
     // importing icerink
     Model icerink("models/icerink/icerink.obj");
 
-    snowman1Body.addChildModel(snowman1LeftArm);
-    snowman1Body.addChildModel(snowman1RightArm);
 
     
     // draw in wireframe
@@ -281,6 +279,7 @@ int main()
         glm::mat4 model = glm::mat4(1.0f);
         glm::mat4 model_leftArm = glm::mat4(1.0f);
         glm::mat4 model_rightArm = glm::mat4(1.0f);
+        glm::mat4 model_head = glm::mat4(1.0f);
 
         // creating matrix for ice rink
         glm::mat4 model_iceRink = glm::mat4(1.0f);
@@ -311,13 +310,17 @@ int main()
 
         // set the shaders for the models
         ourShader.setMat4("model", model);
-        snowman1Body.Draw(ourShader);
+        robot1Body.Draw(ourShader);
 
         ourShader.setMat4("model", model_leftArm);
-        snowman1LeftArm.Draw(ourShader);
+        robot1LeftArm.Draw(ourShader);
 
         ourShader.setMat4("model", model_rightArm);
-        snowman1RightArm.Draw(ourShader);
+        robot1RightArm.Draw(ourShader);
+
+        ourShader.setMat4("model", model_head);
+        robot1Head.Draw(ourShader);
+
 
         // draw ice rink model, thats stationary
         ourShader.setMat4("model", model_iceRink);

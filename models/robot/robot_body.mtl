@@ -8,5 +8,5 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 2
-map_Kd ../../Downloads/Metal_006_Base_Color.png
-map_Ks ../../Downloads/Metal_006_Metallic.jpg
+map_Kd Metal_006_Base_Color.png
+map_Ks Metal_006_Metallic.jpg
