@@ -1,0 +1,45 @@
+# Blender 3.3.1 MTL File: 'snowman.blend'
+# www.blender.org
+
+newmtl BUTTON
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd Plastic_Rough_001_basecolor.jpg
+map_Ns Plastic_Rough_001_ambientOcclusion.jpg
+map_Bump -bm 1.000000 Plastic_Rough_001_normal.jpg
+
+newmtl Snow
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd Snow_003_COLOR.jpg
+map_Ns Snow_003_ROUGH.jpg
+map_Bump -bm 1.000000 Snow_003_NORM.jpg
+
+newmtl WOOD
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd Wood_Bark_006_basecolor.jpg
+map_Ns Wood_Bark_006_roughness.jpg
+map_Bump -bm 1.000000 Wood_Bark_006_normal.jpg
+
+newmtl carrot
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd -s 1 1 1 carrot.jpg
