@@ -5,6 +5,10 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+#include <imgui/imgui.h>
+#include <imgui/imgui_impl_glfw.h>
+#include <imgui/imgui_impl_opengl3.h>
+
 #include "shader_m.h"
 #include "camera.h"
 #include "model.h"
@@ -72,6 +76,13 @@ int main()
         return -1;
     }
 
+    // Initialize ImGUI
+    IMGUI_CHECKVERSION();
+    ImGui::CreateContext();
+    ImGuiIO& io = ImGui::GetIO(); (void)io;
+    ImGui::StyleColorsDark();
+    ImGui_ImplGlfw_InitForOpenGL(window, true);
+    ImGui_ImplOpenGL3_Init("#version 330");
 
     float skyboxVertices[] = {
         // positions          
@@ -152,14 +163,14 @@ int main()
     
     // loading Snowman Model 1 (in seperate parts)
     // make snowman1Body is the main model and the rest are the parts
-    Model snowman1Body("snowman/snowmanNoArms.obj");
+    Model snowman1Body("models/snowman/snowmanNoArms.obj");
     
     // adding the child nodes to snowman1Body
-    Model snowman1LeftArm("snowman/snowmanLeftArm.obj");
-    Model snowman1RightArm("snowman/snowmanRightArm.obj");
+    Model snowman1LeftArm("models/snowman/snowmanLeftArm.obj");
+    Model snowman1RightArm("models/snowman/snowmanRightArm.obj");
 
     // importing icerink
-    Model icerink("icerink/icerink.obj");
+    Model icerink("models/icerink/icerink.obj");
 
     snowman1Body.addChildModel(snowman1LeftArm);
     snowman1Body.addChildModel(snowman1RightArm);
@@ -196,7 +207,12 @@ int main()
         glClearColor(0.05f, 0.05f, 0.05f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        // don't forget to enable shader before setting uniforms
+        // Initialize seperate imgui frame
+        ImGui_ImplOpenGL3_NewFrame();
+        ImGui_ImplGlfw_NewFrame();
+        ImGui::NewFrame();
+
+        // Enable shaders before setting uniforms
         ourShader.use();
 
         // view/projection transformations
@@ -266,15 +282,22 @@ int main()
         glBindVertexArray(0);
         glDepthFunc(GL_LESS); // set depth function back to default
 
-    
+        // Rendering Imgui
+        // (Your code clears your framebuffer, renders your other stuff etc.)
+        ImGui::Render();
+        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
         glfwSwapBuffers(window);
         glfwPollEvents(); // polling IO events (for camera movement)
     }
 
+    // Shutdown Imgui
+	ImGui_ImplOpenGL3_Shutdown();
+	ImGui_ImplGlfw_Shutdown();
+	ImGui::DestroyContext();
+
     glDeleteVertexArrays(1, &skyboxVAO);
     glDeleteBuffers(1, &skyboxVBO);
-
 
     glfwTerminate();
     return 0;

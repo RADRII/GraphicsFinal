@@ -16,6 +16,7 @@
 	   "${workspaceFolder}/dependencies/library/libassimp.5.2.4.dylib",
 	   "${workspaceFolder}/model_loading.cpp",
 	   "${workspaceFolder}/glad.c",
+	   "${workspaceFolder}/dependencies/include/imgui/*.cpp",
 	   "-o",
 	   "${workspaceFolder}/app",
 	   "-framework",
