@@ -36,7 +36,11 @@ bool firstMouse = true;
 float deltaTime = 0.0f;
 float lastFrame = 0.0f;
 
-
+// misc vars
+// Boolean: If true, control the imgui. If false, control the camera
+bool imgui_visible = false;
+// Boolean: If true, don't update imgui control pref. If false, do.
+bool shift_active = false;
 
 int main()
 {
@@ -47,9 +51,9 @@ int main()
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-#ifdef __APPLE__
-    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-#endif
+    #ifdef __APPLE__
+        glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+    #endif
 
     // glfw window creation
     // --------------------
@@ -83,6 +87,23 @@ int main()
     ImGui::StyleColorsDark();
     ImGui_ImplGlfw_InitForOpenGL(window, true);
     ImGui_ImplOpenGL3_Init("#version 330");
+
+    // variables to be changed in the imgui window TODO
+    //ambient Strength
+    float ambientStrength = 0.239f;
+    glm::vec3 ambientColour = glm::vec3(0.00f, 0.668f, 1.0f);
+    // diffuse light position
+
+    // directional light
+    glm::vec3 lightDirection(-0.1f, -1.0f, -0.7f);
+    glm::vec3 dirLightColour = glm::vec3(0.515f, 0.715f, 1.0f);
+
+    // point light 1
+    glm::vec3 pointLight1Colour = glm::vec3(0.706f, 0.0f, 1.0f);
+    glm::vec3 pointLight1Position = glm::vec3(-2.472f, 5.106f, 1.784f);
+    float pointLight1Constant = 0.170f;
+    float pointLight1Linear = 0.103f;
+    float pointLight1Quadratic = 0.064f;
 
     float skyboxVertices[] = {
         // positions          
@@ -149,11 +170,6 @@ int main()
         "cubemap/negz.jpg"
     };
     
-
-
-
-
-
     glEnable(GL_DEPTH_TEST);
 
     // build and compile shaders
@@ -180,6 +196,8 @@ int main()
     //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
     ourShader.use();
+    ourShader.setFloat("ambientStrength", ambientStrength);
+    ourShader.setVec3("ambientColour", ambientColour);
     ourShader.setInt("main", 0);
 
     skyboxShader.use();
@@ -212,8 +230,46 @@ int main()
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
 
-        // Enable shaders before setting uniforms
+        ImGui::Begin("Lighting Controls");
+
+        // colour picker for ambient colour
+        ImGui::ColorEdit3("Ambient Colour", (float*)&ambientColour);
+        ImGui::SliderFloat("Ambient Strength", &ambientStrength, 0.0f, 1.0f);
+        ImGui::ColorEdit3("Directional Light Colour", (float*)&dirLightColour);
+        ImGui::SliderFloat("Directional Light X", &lightDirection.x, -1.0f, 1.0f);
+        ImGui::SliderFloat("Directional Light Y", &lightDirection.y, -1.0f, 1.0f);
+        ImGui::SliderFloat("Directional Light Z", &lightDirection.z, -1.0f, 1.0f);
+        ImGui::End();
+
+        // edit point light values with imgui
+        ImGui::Begin("Point Light 1");
+        //ImGui::ColorEdit3("Point Light 1 Colour", (float*)&pointLight1Colour);
+        // have pointlight 1 fade between rainbow colours
+        pointLight1Colour = glm::vec3(sin(glfwGetTime() * 2.0f), sin(glfwGetTime() * 0.7f), sin(glfwGetTime() * 1.3f));
+        ImGui::SliderFloat("Light X", &pointLight1Position.x, -200.0f, 200.0f);
+        ImGui::SliderFloat("Light Y", &pointLight1Position.y, -200.0f, 200.0f);
+        ImGui::SliderFloat("Light Z", &pointLight1Position.z, -200.0f, 200.0f);
+        ImGui::SliderFloat("Point Light 0 Constant", &pointLight1Constant, 0.0f, 1.0f);
+        ImGui::SliderFloat("Point Light 0 Linear", &pointLight1Linear, 0.0f, 1.0f);
+        ImGui::SliderFloat("Point Light 0 Quadratic", &pointLight1Quadratic, 0.0f, 1.0f);
+        ImGui::End();
+
+        // Enable shaders
         ourShader.use();
+       
+        //Set Shader uniforms TODO
+        ourShader.setFloat("ambientStrength", ambientStrength);
+        ourShader.setVec3("ambientColour", ambientColour);
+        ourShader.setVec3("viewPos", camera.Position); 
+
+        ourShader.setVec3("dirColour", dirLightColour);
+        ourShader.setVec3("lightDirection", lightDirection);
+
+        ourShader.setVec3("pointLights[0].colour", pointLight1Colour);
+        ourShader.setVec3("pointLights[0].position", pointLight1Position);
+        ourShader.setFloat("pointLights[0].constant", pointLight1Constant);
+        ourShader.setFloat("pointLights[0].linear", pointLight1Linear);
+        ourShader.setFloat("pointLights[0].quadratic", pointLight1Quadratic);
 
         // view/projection transformations
         glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
@@ -282,6 +338,14 @@ int main()
         glBindVertexArray(0);
         glDepthFunc(GL_LESS); // set depth function back to default
 
+        // If user holds shift button imgui window is visible, else invisible
+        if (imgui_visible == false) {
+            ImGui::GetStyle().Alpha = 0.0f;
+        }
+        else {
+            ImGui::GetStyle().Alpha = 1.0f;
+        }
+
         // Rendering Imgui
         // (Your code clears your framebuffer, renders your other stuff etc.)
         ImGui::Render();
@@ -307,26 +371,46 @@ int main()
 // ---------------------------------------------------------------------------------------------------------
 void processInput(GLFWwindow *window)
 {
-    if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS){
-        glfwSetWindowShouldClose(window, true);
+    // If user holds down shift, imgui window and user cursor is visible.
+    // Shift_active exists so it doesn't update every frame.
+    if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS && imgui_visible == false && shift_active == false){
+        imgui_visible = true;
+        glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+        shift_active = true;
     }
-    if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS){
-        camera.ProcessKeyboard(FORWARD, deltaTime);
+    else if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS && imgui_visible == true && shift_active == false){
+        imgui_visible = false;
+        glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
+        shift_active = true;
     }
-    if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS){
-        camera.ProcessKeyboard(BACKWARD, deltaTime);
+    else if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_RELEASE){
+        shift_active = false;
     }
-    if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS){
-        camera.ProcessKeyboard(LEFT, deltaTime);
-    }
-    if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS){
-        camera.ProcessKeyboard(RIGHT, deltaTime);
-    }
-    if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS){
-        camera.ProcessKeyboard(UP, deltaTime);
-    }
-    if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS){
-        camera.ProcessKeyboard(DOWN, deltaTime);
+    // Move camera if imgui not visible
+    
+    if (!imgui_visible)
+    {
+        if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS){
+            glfwSetWindowShouldClose(window, true);
+        }
+        if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS){
+            camera.ProcessKeyboard(FORWARD, deltaTime);
+        }
+        if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS){
+            camera.ProcessKeyboard(BACKWARD, deltaTime);
+        }
+        if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS){
+            camera.ProcessKeyboard(LEFT, deltaTime);
+        }
+        if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS){
+            camera.ProcessKeyboard(RIGHT, deltaTime);
+        }
+        if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS){
+            camera.ProcessKeyboard(UP, deltaTime);
+        }
+        if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS){
+            camera.ProcessKeyboard(DOWN, deltaTime);
+        }
     }
 
 }
@@ -344,23 +428,27 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 // -------------------------------------------------------
 void mouse_callback(GLFWwindow* window, double xposIn, double yposIn)
 {
-    float xpos = static_cast<float>(xposIn);
-    float ypos = static_cast<float>(yposIn);
-
-    if (firstMouse)
+    // Only move camera when imgui window is closed
+    if (imgui_visible == false)
     {
+        float xpos = static_cast<float>(xposIn);
+        float ypos = static_cast<float>(yposIn);
+
+        if (firstMouse)
+        {
+            lastX = xpos;
+            lastY = ypos;
+            firstMouse = false;
+        }
+
+        float xoffset = xpos - lastX;
+        float yoffset = lastY - ypos; // reversed since y-coordinates go from bottom to top
+
         lastX = xpos;
         lastY = ypos;
-        firstMouse = false;
+
+        camera.ProcessMouseMovement(xoffset, yoffset);
     }
-
-    float xoffset = xpos - lastX;
-    float yoffset = lastY - ypos; // reversed since y-coordinates go from bottom to top
-
-    lastX = xpos;
-    lastY = ypos;
-
-    camera.ProcessMouseMovement(xoffset, yoffset);
 }
 
 // glfw: whenever the mouse scroll wheel scrolls, this callback is called
