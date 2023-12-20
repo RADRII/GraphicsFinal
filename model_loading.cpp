@@ -472,7 +472,7 @@ unsigned int loadTexture(char const * path)
     unsigned char *data = stbi_load(path, &width, &height, &nrComponents, 0);
     if (data)
     {
-        GLenum format;
+        GLenum format = GL_RED;
         if (nrComponents == 1)
             format = GL_RED;
         else if (nrComponents == 3)

@@ -1,8 +1,7 @@
 #ifndef MESH_H
 #define MESH_H
 
-#include <glad/glad.h> // holds all OpenGL type declarations
-
+#include <glad/glad.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
@@ -15,19 +14,12 @@ using namespace std;
 #define MAX_BONE_INFLUENCE 4
 
 struct Vertex {
-    // position
     glm::vec3 Position;
-    // normal
     glm::vec3 Normal;
-    // texCoords
     glm::vec2 TexCoords;
-    // tangent
     glm::vec3 Tangent;
-    // bitangent
     glm::vec3 Bitangent;
-	//bone indexes which will influence this vertex
 	int m_BoneIDs[MAX_BONE_INFLUENCE];
-	//weights from each bone
 	float m_Weights[MAX_BONE_INFLUENCE];
 };
 
@@ -43,16 +35,19 @@ public:
     vector<Vertex>       vertices;
     vector<unsigned int> indices;
     vector<Texture>      textures;
+    // shininess
+    float shininess;
     unsigned int VAO;
 
     // constructor
-    Mesh(vector<Vertex> vertices, vector<unsigned int> indices, vector<Texture> textures)
+    Mesh(vector<Vertex> vertices, vector<unsigned int> indices, vector<Texture> textures, float shininess)
     {
         this->vertices = vertices;
         this->indices = indices;
         this->textures = textures;
+        this->shininess = shininess;
 
-        // now that we have all the required data, set the vertex buffers and its attribute pointers.
+        // Set the vertex buffers and its attribute pointers.
         setupMesh();
     }
 
@@ -86,6 +81,8 @@ public:
         }
         
         // draw mesh
+        // first set shininess value in shader
+        glUniform1f(glGetUniformLocation(shader.ID, "shininess"), shininess);
         glBindVertexArray(VAO);
         glDrawElements(GL_TRIANGLES, static_cast<unsigned int>(indices.size()), GL_UNSIGNED_INT, 0);
         glBindVertexArray(0);

@@ -15,7 +15,7 @@ const int NUM_POINT_LIGHTS = 1;
 struct PointLight {
     vec3 position;
     vec3 colour;
-    // attenuation parameters
+    // Attenuation parameters
     float constant;
     float linear;
     float quadratic;
