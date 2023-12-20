@@ -10,3 +10,4 @@ d 1.000000
 illum 2
 map_Kd Metal_006_Base_Color.png
 map_Ks Metal_006_Metallic.jpg
+map_Bump -bm 1.000000 Metal_006_Normal.png

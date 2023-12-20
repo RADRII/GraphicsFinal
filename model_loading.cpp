@@ -185,14 +185,6 @@ int main()
     Model robot1RightArm("models/robot/robot_armR.obj");
     Model robot1Head("models/robot/robot_head.obj");
 
-    // importing icerink
-    Model icerink("models/icerink/icerink.obj");
-
-
-    
-    // draw in wireframe
-    //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-
     ourShader.use();
     ourShader.setFloat("ambientStrength", ambientStrength);
     ourShader.setVec3("ambientColour", ambientColour);
@@ -239,10 +231,8 @@ int main()
         ImGui::SliderFloat("Directional Light Z", &lightDirection.z, -1.0f, 1.0f);
         ImGui::End();
 
-        // edit point light values with imgui
+        // edit point light values with imgui todo not rainbow
         ImGui::Begin("Point Light 1");
-        //ImGui::ColorEdit3("Point Light 1 Colour", (float*)&pointLight1Colour);
-        // have pointlight 1 fade between rainbow colours
         pointLight1Colour = glm::vec3(sin(glfwGetTime() * 2.0f), sin(glfwGetTime() * 0.7f), sin(glfwGetTime() * 1.3f));
         ImGui::SliderFloat("Light X", &pointLight1Position.x, -200.0f, 200.0f);
         ImGui::SliderFloat("Light Y", &pointLight1Position.y, -200.0f, 200.0f);
@@ -281,32 +271,9 @@ int main()
         glm::mat4 model_rightArm = glm::mat4(1.0f);
         glm::mat4 model_head = glm::mat4(1.0f);
 
-        // creating matrix for ice rink
-        glm::mat4 model_iceRink = glm::mat4(1.0f);
-        model_iceRink = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f)); 
-
-
         // moving model to center of screen
         model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f)); 
         model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
-
-        // continuously rotate the model around the y-axis
-         // variable to store the velocity of the model rotation
-        float main_velocity = 0.75f;
-        model = glm::rotate(model, static_cast<float>(glfwGetTime()) * (main_velocity), glm::vec3(0.0f, 1.0f, 0.0f));
-
-        // variable to store the velocity of the model rotation
-        float velocityLeft = 0.75f;
-        float velocityRight = 0.6f;
-
-        model_leftArm = glm::translate(model, glm::vec3(0.476661f, 1.66072f, 0.009389f));
-        model_leftArm = glm::rotate(model_leftArm, static_cast<float>(glfwGetTime()) * (-velocityLeft), glm::vec3(1.0f, 0.0f, 0.0f));
-        model_leftArm = glm::scale(model_leftArm, glm::vec3(1.0f, 1.0f, 1.0f));
-
-        model_rightArm = glm::translate(model, glm::vec3(-0.481882f, 1.66463f, 0.010983f));
-        model_rightArm = glm::rotate(model_rightArm, static_cast<float>(glfwGetTime()) * (velocityRight), glm::vec3(1.0f, 0.0f, 0.0f));
-        model_rightArm = glm::scale(model_rightArm, glm::vec3(1.0f, 1.0f, 1.0f));
-
 
         // set the shaders for the models
         ourShader.setMat4("model", model);
@@ -320,12 +287,6 @@ int main()
 
         ourShader.setMat4("model", model_head);
         robot1Head.Draw(ourShader);
-
-
-        // draw ice rink model, thats stationary
-        ourShader.setMat4("model", model_iceRink);
-        icerink.Draw(ourShader);
-
 
         // draw skybox as last
         glDepthFunc(GL_LEQUAL);  // change depth function so depth test passes when values are equal to depth buffer's content
