@@ -190,6 +190,9 @@ int main()
     ourShader.setVec3("ambientColour", ambientColour);
     ourShader.setInt("main", 0);
 
+    // Loading Spire
+    Model spire("models/spirebase/spirebasenew.obj");
+
     skyboxShader.use();
     skyboxShader.setInt("skybox", 0);
 
@@ -271,9 +274,14 @@ int main()
         glm::mat4 model_rightArm = glm::mat4(1.0f);
         glm::mat4 model_head = glm::mat4(1.0f);
 
+        glm::mat4 spirem = glm::mat4(1.0f);
+
         // moving model to center of screen
         model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f)); 
         model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
+
+        spirem = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f)); 
+        spirem = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
 
         // set the shaders for the models
         ourShader.setMat4("model", model);
@@ -287,6 +295,9 @@ int main()
 
         ourShader.setMat4("model", model_head);
         robot1Head.Draw(ourShader);
+
+        ourShader.setMat4("model", spirem);
+        spire.Draw(ourShader);
 
         // draw skybox as last
         glDepthFunc(GL_LEQUAL);  // change depth function so depth test passes when values are equal to depth buffer's content
