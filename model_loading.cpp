@@ -27,7 +27,7 @@ const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 600;
 
 // camera
-Camera camera(glm::vec3(0.0f, 0.0f, 3.0f));
+Camera camera(glm::vec3(0.0f, 3.0f, 20.0f));
 float lastX = SCR_WIDTH / 2.0f;
 float lastY = SCR_HEIGHT / 2.0f;
 bool firstMouse = true;
@@ -339,8 +339,47 @@ int main()
         model_spiretop = glm::scale(model_spiretop, glm::vec3(2.0f, 1.0f, 1.0f));
 
         //Crowd of four robots walking
-        model_robot1 = glm::translate(model_robot1, glm::vec3(0.0f, 0.0f, 0.0f)); 
-        model_robot1 = glm::scale(model_robot1, glm::vec3(1.0f, 1.0f, 1.0f));
+        //Move to Beginning positions
+        model_robot1 = glm::translate(model_robot1, glm::vec3(-8.472f, 0.0f, -4.784f)); 
+        model_robot2 = glm::translate(model_robot2, glm::vec3(-12.472f, 0.0f, -4.784f)); 
+        model_robot3 = glm::translate(model_robot3, glm::vec3(-8.472f, 0.0f, -8.784f)); 
+        model_robot4 = glm::translate(model_robot4, glm::vec3(-12.472f, 0.0f, -8.784f));
+
+        //Make models 'walk'
+        float walkVelocity = 0.6f; //Velocity for model arm rotation
+        model_robot1 = glm::translate(model_robot1, glm::vec3(0.0f, 0.0f, static_cast<float>(glfwGetTime()*walkVelocity))); 
+        model_robot2 = glm::translate(model_robot2, glm::vec3(0.0f, 0.0f, static_cast<float>(glfwGetTime()*walkVelocity)));
+        model_robot3 = glm::translate(model_robot3, glm::vec3(0.0f, 0.0f, static_cast<float>(glfwGetTime()*walkVelocity)));
+        model_robot4 = glm::translate(model_robot4, glm::vec3(0.0f, 0.0f, static_cast<float>(glfwGetTime()*walkVelocity)));
+
+        //Move child parts to Beginning positions
+        model_head1 = glm::translate(model_robot1, glm::vec3(0.0f, 0.0f, 0.0f));
+        model_head2 = glm::translate(model_robot2, glm::vec3(0.0f, 0.0f, 0.0f));
+        model_head3 = glm::translate(model_robot3, glm::vec3(0.0f, 0.0f, 0.0f));
+        model_head4 = glm::translate(model_robot4, glm::vec3(0.0f, 0.0f, 0.0f));
+
+        model_leftArm1 = glm::translate(model_robot1, glm::vec3(0.0f, 0.0f, 0.0f));
+        model_leftArm2 = glm::translate(model_robot2, glm::vec3(0.0f, 0.0f, 0.0f));
+        model_leftArm3 = glm::translate(model_robot3, glm::vec3(0.0f, 0.0f, 0.0f));
+        model_leftArm4 = glm::translate(model_robot4, glm::vec3(0.0f, 0.0f, 0.0f));
+
+        model_rightArm1 = glm::translate(model_robot1, glm::vec3(0.0f, 0.0f, 0.0f));
+        model_rightArm2 = glm::translate(model_robot2, glm::vec3(0.0f, 0.0f, 0.0f));
+        model_rightArm3 = glm::translate(model_robot3, glm::vec3(0.0f, 0.0f, 0.0f));
+        model_rightArm4 = glm::translate(model_robot4, glm::vec3(0.0f, 0.0f, 0.0f));
+
+        //Swing robot arms
+        float armVelocity = 3.0f; //Velocity for model arm rotation
+        model_leftArm1 = glm::rotate(model_leftArm1, static_cast<float>(0.2f *(sin(glfwGetTime()))) * (armVelocity), glm::vec3(0.0f, 1.0f, 0.0f));
+        model_leftArm2 = glm::rotate(model_leftArm2, static_cast<float>(0.2f *(sin(glfwGetTime()))) * (armVelocity), glm::vec3(0.0f, 1.0f, 0.0f));
+        model_leftArm3 = glm::rotate(model_leftArm3, static_cast<float>(0.2f *(sin(glfwGetTime()))) * (armVelocity), glm::vec3(0.0f, 1.0f, 0.0f));
+        model_leftArm4 = glm::rotate(model_leftArm4, static_cast<float>(0.2f *(sin(glfwGetTime()))) * (armVelocity), glm::vec3(0.0f, 1.0f, 0.0f));
+
+        model_rightArm1 = glm::rotate(model_rightArm1, static_cast<float>(0.2f *(sin(glfwGetTime()))) * (armVelocity), glm::vec3(0.0f, 1.0f, 0.0f));
+        model_rightArm2 = glm::rotate(model_rightArm2, static_cast<float>(0.2f *(sin(glfwGetTime()))) * (armVelocity), glm::vec3(0.0f, 1.0f, 0.0f));
+        model_rightArm3 = glm::rotate(model_rightArm3, static_cast<float>(0.2f *(sin(glfwGetTime()))) * (armVelocity), glm::vec3(0.0f, 1.0f, 0.0f));
+        model_rightArm4 = glm::rotate(model_rightArm4, static_cast<float>(0.2f *(sin(glfwGetTime()))) * (armVelocity), glm::vec3(0.0f, 1.0f, 0.0f));
+        
 
         // set the shaders for the models
         ourShader.setMat4("model", model_robot1);
