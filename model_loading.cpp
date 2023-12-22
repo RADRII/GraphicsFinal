@@ -161,12 +161,12 @@ int main()
 
     vector<std::string> faces
     {
-        "cubemap/posx.jpg",
-        "cubemap/negx.jpg",
-        "cubemap/posy.jpg",
-        "cubemap/negy.jpg",
-        "cubemap/posz.jpg",
-        "cubemap/negz.jpg"
+        "cubemap/posx.png",
+        "cubemap/negx.png",
+        "cubemap/posy.png",
+        "cubemap/negy.png",
+        "cubemap/posz.png",
+        "cubemap/negz.png"
     };
     
     glEnable(GL_DEPTH_TEST);
