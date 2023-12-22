@@ -191,6 +191,9 @@ int main()
     // Loading Spire Top
     Model spireTop("models/spiretop/spiretop.obj");
 
+    // Loading Floor Plane
+    Model floor("models/floor/floor.obj");
+
     ourShader.use();
     ourShader.setFloat("ambientStrength", ambientStrength);
     ourShader.setVec3("ambientColour", ambientColour);
@@ -280,12 +283,17 @@ int main()
         glm::mat4 model_spirebase = glm::mat4(1.0f);
         glm::mat4 model_spiretop = glm::mat4(1.0f);
 
-        // moving spirebase and robot to center of screen
+        glm::mat4 model_floor = glm::mat4(1.0f);
+
+        // moving spirebase, floor and robot to center of screen
         model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f)); 
         model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
 
         model_spirebase = glm::translate(model_spirebase, glm::vec3(0.0f, 0.0f, 0.0f)); 
         model_spirebase = glm::scale(model_spirebase, glm::vec3(1.0f, 1.0f, 1.0f));
+
+        model_floor = glm::translate(model_floor, glm::vec3(0.0f, 0.0f, 0.0f)); 
+        model_floor = glm::scale(model_floor, glm::vec3(1.0f, 1.0f, 1.0f));
 
         //move spiretop aside
         model_spiretop = glm::translate(model_spiretop, glm::vec3(70.0f, 0.0f, 0.0));
@@ -309,6 +317,9 @@ int main()
 
         ourShader.setMat4("model", model_spirebase);
         spireBase.Draw(ourShader);
+
+        ourShader.setMat4("model", model_floor);
+        floor.Draw(ourShader);
 
         // draw skybox as last
         glDepthFunc(GL_LEQUAL);  // change depth function so depth test passes when values are equal to depth buffer's content
