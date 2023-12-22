@@ -1,6 +1,6 @@
 # Blender 3.6.4
 # www.blender.org
-mtllib spirebasenew.mtl
+mtllib spirebase.mtl
 o Circle
 v -0.212339 0.403707 -0.956338
 v -0.576820 0.414307 -0.690502

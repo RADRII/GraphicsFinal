@@ -176,7 +176,7 @@ int main()
     Shader ourShader("shaders/1.model_loading.vs", "shaders/1.model_loading.fs");
     Shader skyboxShader("shaders/skybox.vs", "shaders/skybox.fs");
     
-    // Loading Robot (all parts)
+    // Loading Robot1 (all parts)
     // Robot1Body is the main model, the rest are objects attached
     Model robot1Body("models/robot/robot_body.obj");
     
@@ -184,6 +184,33 @@ int main()
     Model robot1LeftArm("models/robot/robot_armL.obj");
     Model robot1RightArm("models/robot/robot_armR.obj");
     Model robot1Head("models/robot/robot_head.obj");
+
+    // Loading Robot2 (all parts)
+    // Robot1Body is the main model, the rest are objects attached
+    Model robot2Body("models/robot/robot_body.obj");
+    
+    // Adding child parts
+    Model robot2LeftArm("models/robot/robot_armL.obj");
+    Model robot2RightArm("models/robot/robot_armR.obj");
+    Model robot2Head("models/robot/robot_head.obj");
+
+    // Loading Robot2 (all parts)
+    // Robot1Body is the main model, the rest are objects attached
+    Model robot3Body("models/robot/robot_body.obj");
+    
+    // Adding child parts
+    Model robot3LeftArm("models/robot/robot_armL.obj");
+    Model robot3RightArm("models/robot/robot_armR.obj");
+    Model robot3Head("models/robot/robot_head.obj");
+
+    // Loading Robot2 (all parts)
+    // Robot1Body is the main model, the rest are objects attached
+    Model robot4Body("models/robot/robot_body.obj");
+    
+    // Adding child parts
+    Model robot4LeftArm("models/robot/robot_armL.obj");
+    Model robot4RightArm("models/robot/robot_armR.obj");
+    Model robot4Head("models/robot/robot_head.obj");
 
     // Loading Spire Base
     Model spireBase("models/spirebase/spirebase.obj");
@@ -275,20 +302,32 @@ int main()
         ourShader.setMat4("view", view);
 
         // creating matrix for each loaded obj file (for transformations)
-        glm::mat4 model = glm::mat4(1.0f);
-        glm::mat4 model_leftArm = glm::mat4(1.0f);
-        glm::mat4 model_rightArm = glm::mat4(1.0f);
-        glm::mat4 model_head = glm::mat4(1.0f);
+        glm::mat4 model_robot1 = glm::mat4(1.0f);
+        glm::mat4 model_leftArm1 = glm::mat4(1.0f);
+        glm::mat4 model_rightArm1 = glm::mat4(1.0f);
+        glm::mat4 model_head1 = glm::mat4(1.0f);
+
+        glm::mat4 model_robot2 = glm::mat4(1.0f);
+        glm::mat4 model_leftArm2 = glm::mat4(1.0f);
+        glm::mat4 model_rightArm2 = glm::mat4(1.0f);
+        glm::mat4 model_head2 = glm::mat4(1.0f);
+
+        glm::mat4 model_robot3 = glm::mat4(1.0f);
+        glm::mat4 model_leftArm3 = glm::mat4(1.0f);
+        glm::mat4 model_rightArm3 = glm::mat4(1.0f);
+        glm::mat4 model_head3 = glm::mat4(1.0f);
+
+        glm::mat4 model_robot4 = glm::mat4(1.0f);
+        glm::mat4 model_leftArm4 = glm::mat4(1.0f);
+        glm::mat4 model_rightArm4 = glm::mat4(1.0f);
+        glm::mat4 model_head4 = glm::mat4(1.0f);
 
         glm::mat4 model_spirebase = glm::mat4(1.0f);
         glm::mat4 model_spiretop = glm::mat4(1.0f);
 
         glm::mat4 model_floor = glm::mat4(1.0f);
 
-        // moving spirebase, floor and robot to center of screen
-        model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f)); 
-        model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
-
+        // moving spirebase, floor to center of screen
         model_spirebase = glm::translate(model_spirebase, glm::vec3(0.0f, 0.0f, 0.0f)); 
         model_spirebase = glm::scale(model_spirebase, glm::vec3(1.0f, 1.0f, 1.0f));
 
@@ -299,18 +338,46 @@ int main()
         model_spiretop = glm::translate(model_spiretop, glm::vec3(70.0f, 0.0f, 0.0));
         model_spiretop = glm::scale(model_spiretop, glm::vec3(2.0f, 1.0f, 1.0f));
 
+        //Crowd of four robots walking
+        model_robot1 = glm::translate(model_robot1, glm::vec3(0.0f, 0.0f, 0.0f)); 
+        model_robot1 = glm::scale(model_robot1, glm::vec3(1.0f, 1.0f, 1.0f));
+
         // set the shaders for the models
-        ourShader.setMat4("model", model);
+        ourShader.setMat4("model", model_robot1);
         robot1Body.Draw(ourShader);
-
-        ourShader.setMat4("model", model_leftArm);
+        ourShader.setMat4("model", model_leftArm1);
         robot1LeftArm.Draw(ourShader);
-
-        ourShader.setMat4("model", model_rightArm);
+        ourShader.setMat4("model", model_rightArm1);
         robot1RightArm.Draw(ourShader);
-
-        ourShader.setMat4("model", model_head);
+        ourShader.setMat4("model", model_head1);
         robot1Head.Draw(ourShader);
+
+        ourShader.setMat4("model", model_robot2);
+        robot2Body.Draw(ourShader);
+        ourShader.setMat4("model", model_leftArm2);
+        robot2LeftArm.Draw(ourShader);
+        ourShader.setMat4("model", model_rightArm2);
+        robot2RightArm.Draw(ourShader);
+        ourShader.setMat4("model", model_head2);
+        robot2Head.Draw(ourShader);
+
+        ourShader.setMat4("model", model_robot3);
+        robot3Body.Draw(ourShader);
+        ourShader.setMat4("model", model_leftArm3);
+        robot3LeftArm.Draw(ourShader);
+        ourShader.setMat4("model", model_rightArm3);
+        robot3RightArm.Draw(ourShader);
+        ourShader.setMat4("model", model_head3);
+        robot3Head.Draw(ourShader);
+
+        ourShader.setMat4("model", model_robot4);
+        robot4Body.Draw(ourShader);
+        ourShader.setMat4("model", model_leftArm4);
+        robot4LeftArm.Draw(ourShader);
+        ourShader.setMat4("model", model_rightArm4);
+        robot4RightArm.Draw(ourShader);
+        ourShader.setMat4("model", model_head4);
+        robot4Head.Draw(ourShader);
 
         ourShader.setMat4("model", model_spiretop);
         spireTop.Draw(ourShader);
