@@ -10,7 +10,7 @@ uniform sampler2D texture_diffuse1;
 uniform sampler2D texture_specular1;
 
 //Point light Specification
-const int NUM_POINT_LIGHTS = 2;
+const int NUM_POINT_LIGHTS = 3;
 
 struct PointLight {
     vec3 position;

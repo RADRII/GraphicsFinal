@@ -95,7 +95,7 @@ int main()
     glm::vec3 dirLightColour = glm::vec3(1.0f, 0.1f, 0.1f);
 
     // Point Light 1
-    glm::vec3 pointLight1Colour = glm::vec3(1.0f, 0.305f, 0.305f);
+    glm::vec3 pointLight1Colour = glm::vec3(1.0f, 1.0f, 1.0f);
     glm::vec3 pointLight1Position = glm::vec3(-15.0f, 4.0f, 0.0f);
     float pointLight1Constant = 0.170f;
     float pointLight1Linear = 0.103f;
@@ -107,6 +107,13 @@ int main()
     float pointLight2Constant = 0.170f;
     float pointLight2Linear = 0.103f;
     float pointLight2Quadratic = 0.064f;
+
+    // Point Light 3
+    glm::vec3 pointLight3Colour = glm::vec3(1.0f, 1.0f, 1.0f);
+    glm::vec3 pointLight3Position = glm::vec3(-12.0f, 10.0f, 0.0f);
+    float pointLight3Constant = 0.170f;
+    float pointLight3Linear = 0.103f;
+    float pointLight3Quadratic = 0.064f;
 
     // Fog
     glm::vec3 fogColour = glm::vec3(1.0f, 0.25f, 0.25f);
@@ -281,25 +288,37 @@ int main()
         ImGui::End();
 
         // Point Light 1 Controller
-        ImGui::Begin("Point Light 0");
-        ImGui::ColorEdit3("Point Light 0 Colour", (float*)&pointLight1Colour);
+        pointLight1Colour = glm::vec3(sin(glfwGetTime() * 1.0f), 0.0f, 0.0f);
+        ImGui::Begin("Point Light 1");
+        ImGui::ColorEdit3("Point Light 1 Colour", (float*)&pointLight1Colour);
         ImGui::SliderFloat("Light X", &pointLight1Position.x, -200.0f, 200.0f);
         ImGui::SliderFloat("Light Y", &pointLight1Position.y, -200.0f, 200.0f);
         ImGui::SliderFloat("Light Z", &pointLight1Position.z, -200.0f, 200.0f);
-        ImGui::SliderFloat("Point Light 0 Constant", &pointLight1Constant, 0.0f, 1.0f);
-        ImGui::SliderFloat("Point Light 0 Linear", &pointLight1Linear, 0.0f, 1.0f);
-        ImGui::SliderFloat("Point Light 0 Quadratic", &pointLight1Quadratic, 0.0f, 1.0f);
+        ImGui::SliderFloat("Point Light 1 Constant", &pointLight1Constant, 0.0f, 1.0f);
+        ImGui::SliderFloat("Point Light 1 Linear", &pointLight1Linear, 0.0f, 1.0f);
+        ImGui::SliderFloat("Point Light 1 Quadratic", &pointLight1Quadratic, 0.0f, 1.0f);
         ImGui::End();
 
         // Point Light 2 Controller
-        ImGui::Begin("Point Light 1");
-        ImGui::ColorEdit3("Point Light 1 Colour", (float*)&pointLight2Colour);
+        ImGui::Begin("Point Light 2");
+        ImGui::ColorEdit3("Point Light 2 Colour", (float*)&pointLight2Colour);
         ImGui::SliderFloat("Light X", &pointLight2Position.x, -200.0f, 200.0f);
         ImGui::SliderFloat("Light Y", &pointLight2Position.y, -200.0f, 200.0f);
         ImGui::SliderFloat("Light Z", &pointLight2Position.z, -200.0f, 200.0f);
-        ImGui::SliderFloat("Point Light 1 Constant", &pointLight2Constant, 0.0f, 1.0f);
-        ImGui::SliderFloat("Point Light 1 Linear", &pointLight2Linear, 0.0f, 1.0f);
-        ImGui::SliderFloat("Point Light 1 Quadratic", &pointLight2Quadratic, 0.0f, 1.0f);
+        ImGui::SliderFloat("Point Light 2 Constant", &pointLight2Constant, 0.0f, 1.0f);
+        ImGui::SliderFloat("Point Light 2 Linear", &pointLight2Linear, 0.0f, 1.0f);
+        ImGui::SliderFloat("Point Light 2 Quadratic", &pointLight2Quadratic, 0.0f, 1.0f);
+        ImGui::End();
+
+        // Point Light 3 Controller
+        ImGui::Begin("Point Light 3");
+        ImGui::ColorEdit3("Point Light 3 Colour", (float*)&pointLight3Colour);
+        ImGui::SliderFloat("Light X", &pointLight2Position.x, -200.0f, 200.0f);
+        ImGui::SliderFloat("Light Y", &pointLight2Position.y, -200.0f, 200.0f);
+        ImGui::SliderFloat("Light Z", &pointLight2Position.z, -200.0f, 200.0f);
+        ImGui::SliderFloat("Point Light 3 Constant", &pointLight3Constant, 0.0f, 1.0f);
+        ImGui::SliderFloat("Point Light 3 Linear", &pointLight3Linear, 0.0f, 1.0f);
+        ImGui::SliderFloat("Point Light 3 Quadratic", &pointLight3Quadratic, 0.0f, 1.0f);
         ImGui::End();
 
         // Fog Controller
@@ -332,6 +351,12 @@ int main()
         ourShader.setFloat("pointLights[1].constant", pointLight2Constant);
         ourShader.setFloat("pointLights[1].linear", pointLight2Linear);
         ourShader.setFloat("pointLights[1].quadratic", pointLight2Quadratic);
+
+        ourShader.setVec3("pointLights[2].colour", pointLight3Colour);
+        ourShader.setVec3("pointLights[2].position", pointLight3Position);
+        ourShader.setFloat("pointLights[2].constant", pointLight3Constant);
+        ourShader.setFloat("pointLights[2].linear", pointLight3Linear);
+        ourShader.setFloat("pointLights[2].quadratic", pointLight3Quadratic);
 
         ourShader.setVec3("fogColour", fogColour);
         ourShader.setFloat("fogDensity", fogDensity);
