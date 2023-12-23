@@ -89,7 +89,7 @@ int main()
 
     // Imgui Lighting variables
     //Ambient and Directional
-    float ambientStrength = 0.160f;
+    float ambientStrength = 0.25f;
     glm::vec3 ambientColour = glm::vec3(1.0f, 1.0f, 1.0f);
     glm::vec3 lightDirection(0.1f, -1.0f, 0.7f);
     glm::vec3 dirLightColour = glm::vec3(1.0f, 0.1f, 0.1f);
@@ -194,39 +194,12 @@ int main()
     
     // Loading Robot1 (all parts)
     // Robot1Body is the main model, the rest are objects attached
-    Model robot1Body("models/robot/robot_body.obj");
+    Model robotBody("models/robot/robot_body.obj");
     
     // Adding child parts
-    Model robot1LeftArm("models/robot/robot_armL.obj");
-    Model robot1RightArm("models/robot/robot_armR.obj");
-    Model robot1Head("models/robot/robot_head.obj");
-
-    // Loading Robot2 (all parts)
-    // Robot1Body is the main model, the rest are objects attached
-    Model robot2Body("models/robot/robot_body.obj");
-    
-    // Adding child parts
-    Model robot2LeftArm("models/robot/robot_armL.obj");
-    Model robot2RightArm("models/robot/robot_armR.obj");
-    Model robot2Head("models/robot/robot_head.obj");
-
-    // Loading Robot2 (all parts)
-    // Robot1Body is the main model, the rest are objects attached
-    Model robot3Body("models/robot/robot_body.obj");
-    
-    // Adding child parts
-    Model robot3LeftArm("models/robot/robot_armL.obj");
-    Model robot3RightArm("models/robot/robot_armR.obj");
-    Model robot3Head("models/robot/robot_head.obj");
-
-    // Loading Robot2 (all parts)
-    // Robot1Body is the main model, the rest are objects attached
-    Model robot4Body("models/robot/robot_body.obj");
-    
-    // Adding child parts
-    Model robot4LeftArm("models/robot/robot_armL.obj");
-    Model robot4RightArm("models/robot/robot_armR.obj");
-    Model robot4Head("models/robot/robot_head.obj");
+    Model robotLeftArm("models/robot/robot_armL.obj");
+    Model robotRightArm("models/robot/robot_armR.obj");
+    Model robotHead("models/robot/robot_head.obj");
 
     // Loading Spire Base
     Model spireBase("models/spirebase/spirebase.obj");
@@ -235,8 +208,7 @@ int main()
     Model spireTop("models/spiretop/spiretop.obj");
 
     // Loading Buildings
-    Model building1("models/buildings/Building01.obj");
-    Model building2("models/buildings/Building01.obj");
+    Model building("models/buildings/Building01.obj");
 
     // Loading Floor Plane
     Model floor("models/floor/floor.obj");
@@ -394,8 +366,11 @@ int main()
         glm::mat4 model_spiretop = glm::mat4(1.0f);
 
         glm::mat4 model_floor = glm::mat4(1.0f);
+
         glm::mat4 model_building1 = glm::mat4(1.0f);
         glm::mat4 model_building2 = glm::mat4(1.0f);
+        glm::mat4 model_building3 = glm::mat4(1.0f);
+        glm::mat4 model_building4 = glm::mat4(1.0f);
 
         // moving spirebase, floor to center of screen
         model_spirebase = glm::translate(model_spirebase, glm::vec3(0.0f, 0.0f, 0.0f)); 
@@ -408,6 +383,16 @@ int main()
         
         model_building2 = glm::translate(model_building2, glm::vec3(0.0f, -1.0f, -25.0f));
         model_building2 = glm::scale(model_building2, glm::vec3(4.0f, 2.0f, 2.0f));
+
+        model_building3 = glm::translate(model_building3, glm::vec3(0.0f, 0.0f, 0.0f));
+        model_building3 = glm::rotate(model_building3, 2.356f, glm::vec3(0.0f, 1.0f, 0.0f));
+        model_building3 = glm::translate(model_building3, glm::vec3(-50.0f, -1.0f, -90.0f));
+        model_building3 = glm::scale(model_building3, glm::vec3(4.0f, 2.0f, 2.0f));
+
+        model_building4 = glm::translate(model_building4, glm::vec3(0.0f, 0.0f, 0.0f));
+        model_building4 = glm::rotate(model_building4, 4.712f, glm::vec3(0.0f, 1.0f, 0.0f));
+        model_building4 = glm::translate(model_building4, glm::vec3(40.0f, -1.0f, -50.0f));
+        model_building4 = glm::scale(model_building4, glm::vec3(4.0f, 2.0f, 2.0f));
 
         //move spiretop aside
         model_spiretop = glm::translate(model_spiretop, glm::vec3(70.0f, 0.0f, 0.0));
@@ -458,40 +443,40 @@ int main()
 
         // Set the shaders for models
         ourShader.setMat4("model", model_robot1);
-        robot1Body.Draw(ourShader);
+        robotBody.Draw(ourShader);
         ourShader.setMat4("model", model_leftArm1);
-        robot1LeftArm.Draw(ourShader);
+        robotLeftArm.Draw(ourShader);
         ourShader.setMat4("model", model_rightArm1);
-        robot1RightArm.Draw(ourShader);
+        robotRightArm.Draw(ourShader);
         ourShader.setMat4("model", model_head1);
-        robot1Head.Draw(ourShader);
+        robotHead.Draw(ourShader);
 
         ourShader.setMat4("model", model_robot2);
-        robot2Body.Draw(ourShader);
+        robotBody.Draw(ourShader);
         ourShader.setMat4("model", model_leftArm2);
-        robot2LeftArm.Draw(ourShader);
+        robotLeftArm.Draw(ourShader);
         ourShader.setMat4("model", model_rightArm2);
-        robot2RightArm.Draw(ourShader);
+        robotRightArm.Draw(ourShader);
         ourShader.setMat4("model", model_head2);
-        robot2Head.Draw(ourShader);
+        robotHead.Draw(ourShader);
 
         ourShader.setMat4("model", model_robot3);
-        robot3Body.Draw(ourShader);
+        robotBody.Draw(ourShader);
         ourShader.setMat4("model", model_leftArm3);
-        robot3LeftArm.Draw(ourShader);
+        robotLeftArm.Draw(ourShader);
         ourShader.setMat4("model", model_rightArm3);
-        robot3RightArm.Draw(ourShader);
+        robotRightArm.Draw(ourShader);
         ourShader.setMat4("model", model_head3);
-        robot3Head.Draw(ourShader);
+        robotHead.Draw(ourShader);
 
         ourShader.setMat4("model", model_robot4);
-        robot4Body.Draw(ourShader);
+        robotBody.Draw(ourShader);
         ourShader.setMat4("model", model_leftArm4);
-        robot4LeftArm.Draw(ourShader);
+        robotLeftArm.Draw(ourShader);
         ourShader.setMat4("model", model_rightArm4);
-        robot4RightArm.Draw(ourShader);
+        robotRightArm.Draw(ourShader);
         ourShader.setMat4("model", model_head4);
-        robot4Head.Draw(ourShader);
+        robotHead.Draw(ourShader);
 
         ourShader.setMat4("model", model_spiretop);
         spireTop.Draw(ourShader);
@@ -500,9 +485,13 @@ int main()
         spireBase.Draw(ourShader);
 
         ourShader.setMat4("model", model_building1);
-        building1.Draw(ourShader);
+        building.Draw(ourShader);
         ourShader.setMat4("model", model_building2);
-        building2.Draw(ourShader);
+        building.Draw(ourShader);
+        ourShader.setMat4("model", model_building3);
+        building.Draw(ourShader);
+        ourShader.setMat4("model", model_building4);
+        building.Draw(ourShader);
 
         ourShader.setMat4("model", model_floor);
         floor.Draw(ourShader);
