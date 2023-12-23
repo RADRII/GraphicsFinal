@@ -94,15 +94,22 @@ int main()
     glm::vec3 ambientColour = glm::vec3(1.0f, 1.0f, 1.0f);
     
     // directional light
-    glm::vec3 lightDirection(-0.1f, -1.0f, -0.7f);
-    glm::vec3 dirLightColour = glm::vec3(0.515f, 0.715f, 1.0f);
+    glm::vec3 lightDirection(0.1f, -1.0f, 0.7f);
+    glm::vec3 dirLightColour = glm::vec3(1.0f, 0.1f, 0.1f);
 
-    // point light 1
-    glm::vec3 pointLight1Colour = glm::vec3(0.706f, 0.0f, 1.0f);
-    glm::vec3 pointLight1Position = glm::vec3(-2.472f, 5.106f, 1.784f);
+    // Point Light 1
+    glm::vec3 pointLight1Colour = glm::vec3(1.0f, 0.305f, 0.305f);
+    glm::vec3 pointLight1Position = glm::vec3(-15.0f, 4.0f, 0.0f);
     float pointLight1Constant = 0.170f;
     float pointLight1Linear = 0.103f;
     float pointLight1Quadratic = 0.064f;
+
+    // Point Light 2
+    glm::vec3 pointLight2Colour = glm::vec3(1.0f, 1.0f, 1.0f);
+    glm::vec3 pointLight2Position = glm::vec3(6.0f, 9.0f, 0.0f);
+    float pointLight2Constant = 0.170f;
+    float pointLight2Linear = 0.103f;
+    float pointLight2Quadratic = 0.064f;
 
     float skyboxVertices[] = {
         // positions          
@@ -272,14 +279,25 @@ int main()
         ImGui::End();
 
         // edit point light values with imgui
-        ImGui::Begin("Point Light 1");
-        ImGui::ColorEdit3("Point Light 2 Colour", (float*)&pointLight1Colour);
+        ImGui::Begin("Point Light 0");
+        ImGui::ColorEdit3("Point Light 0 Colour", (float*)&pointLight1Colour);
         ImGui::SliderFloat("Light X", &pointLight1Position.x, -200.0f, 200.0f);
         ImGui::SliderFloat("Light Y", &pointLight1Position.y, -200.0f, 200.0f);
         ImGui::SliderFloat("Light Z", &pointLight1Position.z, -200.0f, 200.0f);
         ImGui::SliderFloat("Point Light 0 Constant", &pointLight1Constant, 0.0f, 1.0f);
         ImGui::SliderFloat("Point Light 0 Linear", &pointLight1Linear, 0.0f, 1.0f);
         ImGui::SliderFloat("Point Light 0 Quadratic", &pointLight1Quadratic, 0.0f, 1.0f);
+        ImGui::End();
+
+        // edit point light values with imgui
+        ImGui::Begin("Point Light 1");
+        ImGui::ColorEdit3("Point Light 1 Colour", (float*)&pointLight2Colour);
+        ImGui::SliderFloat("Light X", &pointLight2Position.x, -200.0f, 200.0f);
+        ImGui::SliderFloat("Light Y", &pointLight2Position.y, -200.0f, 200.0f);
+        ImGui::SliderFloat("Light Z", &pointLight2Position.z, -200.0f, 200.0f);
+        ImGui::SliderFloat("Point Light 1 Constant", &pointLight2Constant, 0.0f, 1.0f);
+        ImGui::SliderFloat("Point Light 1 Linear", &pointLight2Linear, 0.0f, 1.0f);
+        ImGui::SliderFloat("Point Light 1 Quadratic", &pointLight2Quadratic, 0.0f, 1.0f);
         ImGui::End();
 
         // Enable shaders
@@ -298,6 +316,12 @@ int main()
         ourShader.setFloat("pointLights[0].constant", pointLight1Constant);
         ourShader.setFloat("pointLights[0].linear", pointLight1Linear);
         ourShader.setFloat("pointLights[0].quadratic", pointLight1Quadratic);
+
+        ourShader.setVec3("pointLights[1].colour", pointLight2Colour);
+        ourShader.setVec3("pointLights[1].position", pointLight2Position);
+        ourShader.setFloat("pointLights[1].constant", pointLight2Constant);
+        ourShader.setFloat("pointLights[1].linear", pointLight2Linear);
+        ourShader.setFloat("pointLights[1].quadratic", pointLight2Quadratic);
 
         // view/projection transformations
         glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
