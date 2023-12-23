@@ -29,32 +29,18 @@ class Model
 {
 public:
     // model data 
-    vector<Texture> textures_loaded;	// stores all the textures loaded so far, optimization to make sure textures aren't loaded more than once.
+    vector<Texture> textures_loaded;	// Stores loaded textures once
     vector<Mesh>    meshes;
-    // a vector of models, which are the children of the current model
-    vector<Model>   childModels;
     string directory;
     bool gammaCorrection;
 
-    // constructor, expects a filepath to a 3D model.
+    // Constructor, expects a filepath to a 3D model.
     Model(string const &path, bool gamma = false) : gammaCorrection(gamma)
     {
         loadModel(path);
     }
 
-    // adds a child model to the current model
-    void addChildModel(Model childModel)
-    {
-        childModels.push_back(childModel);
-    }
-
-    // returns the child models of the current model
-    vector<Model> getChildModels()
-    {
-        return childModels;
-    }
-
-    // draws the model, and thus all its meshes
+    // Draws the model
     void Draw(Shader &shader)
     {
         for(unsigned int i = 0; i < meshes.size(); i++)
@@ -62,26 +48,25 @@ public:
     }
     
 private:
-    // loads a model with supported ASSIMP extensions from file and stores the resulting meshes in the meshes vector.
+    // Loads model using Assimp extensions and stores the models meshes
     void loadModel(string const &path)
     {
-        // read file via ASSIMP
+        // Read file via ASSIMP
         Assimp::Importer importer;
         const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_GenSmoothNormals | aiProcess_FlipUVs | aiProcess_CalcTangentSpace);
-        // check for errors
         if(!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) // if is Not Zero
         {
             cout << "ERROR::ASSIMP:: " << importer.GetErrorString() << endl;
             return;
         }
-        // retrieve the directory path of the filepath
+        // Retrieve the directory path of the filepath
         directory = path.substr(0, path.find_last_of('/'));
 
-        // process ASSIMP's root node recursively
+        // Process ASSIMP's root node recursively
         processNode(scene->mRootNode, scene);
     }
 
-    // processes a node in a recursive fashion. Processes each individual mesh located at the node and repeats this process on its children nodes (if any).
+    // Processes a node in a recursive fashion. Processes each individual mesh located at the node and repeats this process on its children nodes (if any).
     void processNode(aiNode *node, const aiScene *scene)
     {
         // process each mesh located at the current node
