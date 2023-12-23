@@ -111,6 +111,12 @@ int main()
     float pointLight2Linear = 0.103f;
     float pointLight2Quadratic = 0.064f;
 
+    // Fog
+    glm::vec3 fogColour = glm::vec3(1.0f, 0.25f, 0.25f);
+    float fogDensity = 0.160f;
+    float fogStart = 60.0f;
+    float fogEnd = 40.0f;
+
     float skyboxVertices[] = {
         // positions          
         -1.0f,  1.0f, -1.0f,
@@ -269,7 +275,7 @@ int main()
 
         ImGui::Begin("Lighting Controls");
 
-        // colour picker for ambient colour
+        // Ambient Light Controller
         ImGui::ColorEdit3("Ambient Colour", (float*)&ambientColour);
         ImGui::SliderFloat("Ambient Strength", &ambientStrength, 0.0f, 1.0f);
         ImGui::ColorEdit3("Directional Light Colour", (float*)&dirLightColour);
@@ -278,7 +284,7 @@ int main()
         ImGui::SliderFloat("Directional Light Z", &lightDirection.z, -1.0f, 1.0f);
         ImGui::End();
 
-        // edit point light values with imgui
+        // Point Light 1 Controller
         ImGui::Begin("Point Light 0");
         ImGui::ColorEdit3("Point Light 0 Colour", (float*)&pointLight1Colour);
         ImGui::SliderFloat("Light X", &pointLight1Position.x, -200.0f, 200.0f);
@@ -289,7 +295,7 @@ int main()
         ImGui::SliderFloat("Point Light 0 Quadratic", &pointLight1Quadratic, 0.0f, 1.0f);
         ImGui::End();
 
-        // edit point light values with imgui
+        // Point Light 2 Controller
         ImGui::Begin("Point Light 1");
         ImGui::ColorEdit3("Point Light 1 Colour", (float*)&pointLight2Colour);
         ImGui::SliderFloat("Light X", &pointLight2Position.x, -200.0f, 200.0f);
@@ -298,6 +304,14 @@ int main()
         ImGui::SliderFloat("Point Light 1 Constant", &pointLight2Constant, 0.0f, 1.0f);
         ImGui::SliderFloat("Point Light 1 Linear", &pointLight2Linear, 0.0f, 1.0f);
         ImGui::SliderFloat("Point Light 1 Quadratic", &pointLight2Quadratic, 0.0f, 1.0f);
+        ImGui::End();
+
+        // Fog Controller
+        ImGui::Begin("Fog Controls");
+        ImGui::ColorEdit3("Fog Colour", (float*)&fogColour);
+        ImGui::SliderFloat("Fog Density", &fogDensity, 0.0f, 1.0f);
+        ImGui::SliderFloat("Fog Start", &fogStart, 0.0f, 100.0f);
+        ImGui::SliderFloat("Fog End", &fogEnd, 0.0f, 100.0f);
         ImGui::End();
 
         // Enable shaders
@@ -322,6 +336,11 @@ int main()
         ourShader.setFloat("pointLights[1].constant", pointLight2Constant);
         ourShader.setFloat("pointLights[1].linear", pointLight2Linear);
         ourShader.setFloat("pointLights[1].quadratic", pointLight2Quadratic);
+
+        ourShader.setVec3("fogColour", fogColour);
+        ourShader.setFloat("fogDensity", fogDensity);
+        ourShader.setFloat("fogStart", fogStart);
+        ourShader.setFloat("fogEnd", fogEnd);
 
         // view/projection transformations
         glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);

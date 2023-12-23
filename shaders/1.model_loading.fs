@@ -36,6 +36,13 @@ uniform vec3 dlColour;
 // Camera Position
 uniform vec3 viewPos;
 
+// Fog
+uniform vec3 fogColour;
+uniform float fogDensity;
+uniform float fogStart;
+uniform float fogEnd;
+
+
 vec3 calculatePL(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir) {
     // Distance between point light and fragment
     float distance = length(light.position - fragPos);
@@ -87,6 +94,14 @@ vec3 calculatePL(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir) {
     for(int i = 0; i < NUM_POINT_LIGHTS; i++) {
         result += calculatePL(pointLights[i], norm, FragPos, viewDirection);
     }
+
+    // Fog Calculation
+    // Distance : Camera to fragment
+    float distance = length(FragPos - viewPos);
+    // # fog determined by linear equation * fog density
+    float fogFactor = (fogEnd - distance) / (fogEnd - fogStart);
+    fogFactor = clamp(fogFactor, 0.0, 1.0) * fogDensity;
+    result = mix(result, fogColour, fogFactor);
     
     FragColor = vec4(result, 1.0);
     
