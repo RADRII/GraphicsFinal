@@ -19,20 +19,19 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 void processInput(GLFWwindow *window);
-unsigned int loadTexture(const char *path);
 unsigned int loadCubemap(vector<std::string> faces);
 
-// settings
+// Consts
 const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 600;
 
-// camera
+// Camera
 Camera camera(glm::vec3(0.0f, 3.0f, 20.0f));
 float lastX = SCR_WIDTH / 2.0f;
 float lastY = SCR_HEIGHT / 2.0f;
 bool firstMouse = true;
 
-// timing
+// Time
 float deltaTime = 0.0f;
 float lastFrame = 0.0f;
 
@@ -88,12 +87,10 @@ int main()
     ImGui_ImplGlfw_InitForOpenGL(window, true);
     ImGui_ImplOpenGL3_Init("#version 330");
 
-    // variables to be changed in the imgui window TODO
-    //ambient Strength
+    // Imgui Lighting variables
+    //Ambient and Directional
     float ambientStrength = 0.160f;
     glm::vec3 ambientColour = glm::vec3(1.0f, 1.0f, 1.0f);
-    
-    // directional light
     glm::vec3 lightDirection(0.1f, -1.0f, 0.7f);
     glm::vec3 dirLightColour = glm::vec3(1.0f, 0.1f, 0.1f);
 
@@ -117,8 +114,8 @@ int main()
     float fogStart = 60.0f;
     float fogEnd = 40.0f;
 
-    float skyboxVertices[] = {
-        // positions          
+    //Skybox
+    float skyboxVertices[] = {       
         -1.0f,  1.0f, -1.0f,
         -1.0f, -1.0f, -1.0f,
          1.0f, -1.0f, -1.0f,
@@ -162,7 +159,6 @@ int main()
          1.0f, -1.0f,  1.0f
     };
 
-     // skybox VAO
     unsigned int skyboxVAO, skyboxVBO;
     glGenVertexArrays(1, &skyboxVAO);
     glGenBuffers(1, &skyboxVBO);
@@ -184,7 +180,7 @@ int main()
     
     glEnable(GL_DEPTH_TEST);
 
-    // build and compile shaders
+    // Build/Compile Shaders
     // -------------------------
     Shader ourShader("shaders/1.model_loading.vs", "shaders/1.model_loading.fs");
     Shader skyboxShader("shaders/skybox.vs", "shaders/skybox.fs");
@@ -246,7 +242,7 @@ int main()
     skyboxShader.use();
     skyboxShader.setInt("skybox", 0);
 
-    //load cup map
+    //Load cube map
     unsigned int cubemapTexture = loadCubemap(faces);
 
     // render loop
@@ -342,13 +338,13 @@ int main()
         ourShader.setFloat("fogStart", fogStart);
         ourShader.setFloat("fogEnd", fogEnd);
 
-        // view/projection transformations
+        // View/projection transformations
         glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
         glm::mat4 view = camera.GetViewMatrix();
         ourShader.setMat4("projection", projection);
         ourShader.setMat4("view", view);
 
-        // creating matrix for each loaded obj file (for transformations)
+        // Matrix for each loaded model
         glm::mat4 model_robot1 = glm::mat4(1.0f);
         glm::mat4 model_leftArm1 = glm::mat4(1.0f);
         glm::mat4 model_rightArm1 = glm::mat4(1.0f);
@@ -435,7 +431,7 @@ int main()
         model_rightArm4 = glm::rotate(model_rightArm4, static_cast<float>(0.2f *(sin(glfwGetTime()))) * (armVelocity), glm::vec3(0.0f, 1.0f, 0.0f));
         
 
-        // set the shaders for the models
+        // Set the shaders for models
         ourShader.setMat4("model", model_robot1);
         robot1Body.Draw(ourShader);
         ourShader.setMat4("model", model_leftArm1);
@@ -486,19 +482,18 @@ int main()
         ourShader.setMat4("model", model_floor);
         floor.Draw(ourShader);
 
-        // draw skybox as last
-        glDepthFunc(GL_LEQUAL);  // change depth function so depth test passes when values are equal to depth buffer's content
+        // Draw skybox
+        glDepthFunc(GL_LEQUAL);
         skyboxShader.use();
-        view = glm::mat4(glm::mat3(camera.GetViewMatrix())); // remove translation from the view matrix
+        view = glm::mat4(glm::mat3(camera.GetViewMatrix()));
         skyboxShader.setMat4("view", view);
         skyboxShader.setMat4("projection", projection);
-        // skybox cube
         glBindVertexArray(skyboxVAO);
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTexture);
         glDrawArrays(GL_TRIANGLES, 0, 36);
         glBindVertexArray(0);
-        glDepthFunc(GL_LESS); // set depth function back to default
+        glDepthFunc(GL_LESS);
 
         // If user holds shift button imgui window is visible, else invisible
         if (imgui_visible == false) {
@@ -514,7 +509,7 @@ int main()
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
         glfwSwapBuffers(window);
-        glfwPollEvents(); // polling IO events (for camera movement)
+        glfwPollEvents(); // polling IO events
     }
 
     // Shutdown Imgui
@@ -618,45 +613,6 @@ void mouse_callback(GLFWwindow* window, double xposIn, double yposIn)
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 {
     camera.ProcessMouseScroll(static_cast<float>(yoffset));
-}
-
-// utility function for loading a 2D texture from file
-// ---------------------------------------------------
-unsigned int loadTexture(char const * path)
-{
-    unsigned int textureID;
-    glGenTextures(1, &textureID);
-
-    int width, height, nrComponents;
-    unsigned char *data = stbi_load(path, &width, &height, &nrComponents, 0);
-    if (data)
-    {
-        GLenum format = GL_RED;
-        if (nrComponents == 1)
-            format = GL_RED;
-        else if (nrComponents == 3)
-            format = GL_RGB;
-        else if (nrComponents == 4)
-            format = GL_RGBA;
-
-        glBindTexture(GL_TEXTURE_2D, textureID);
-        glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
-        glGenerateMipmap(GL_TEXTURE_2D);
-
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-        stbi_image_free(data);
-    }
-    else
-    {
-        std::cout << "Texture failed to load at path: " << path << std::endl;
-        stbi_image_free(data);
-    }
-
-    return textureID;
 }
 
 // loads a cubemap texture from 6 individual texture faces
