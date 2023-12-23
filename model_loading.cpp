@@ -218,6 +218,10 @@ int main()
     // Loading Spire Top
     Model spireTop("models/spiretop/spiretop.obj");
 
+    // Loading Buildings
+    Model building1("models/buildings/Building01.obj");
+    Model building2("models/buildings/Building01.obj");
+
     // Loading Floor Plane
     Model floor("models/floor/floor.obj");
 
@@ -326,13 +330,20 @@ int main()
         glm::mat4 model_spiretop = glm::mat4(1.0f);
 
         glm::mat4 model_floor = glm::mat4(1.0f);
+        glm::mat4 model_building1 = glm::mat4(1.0f);
+        glm::mat4 model_building2 = glm::mat4(1.0f);
 
         // moving spirebase, floor to center of screen
         model_spirebase = glm::translate(model_spirebase, glm::vec3(0.0f, 0.0f, 0.0f)); 
-        model_spirebase = glm::scale(model_spirebase, glm::vec3(1.0f, 1.0f, 1.0f));
-
         model_floor = glm::translate(model_floor, glm::vec3(0.0f, 0.0f, 0.0f)); 
-        model_floor = glm::scale(model_floor, glm::vec3(1.0f, 1.0f, 1.0f));
+
+        // move and rotate buildings
+        model_building1 = glm::translate(model_building1, glm::vec3(-25.0f, -1.0f, 0.0f));
+        model_building1 = glm::rotate(model_building1, 1.5708f, glm::vec3(0.0f, 1.0f, 0.0f));
+        model_building1 = glm::scale(model_building1, glm::vec3(4.0f, 2.0f, 2.0f));
+        
+        model_building2 = glm::translate(model_building2, glm::vec3(0.0f, -1.0f, -25.0f));
+        model_building2 = glm::scale(model_building2, glm::vec3(4.0f, 2.0f, 2.0f));
 
         //move spiretop aside
         model_spiretop = glm::translate(model_spiretop, glm::vec3(70.0f, 0.0f, 0.0));
@@ -423,6 +434,11 @@ int main()
 
         ourShader.setMat4("model", model_spirebase);
         spireBase.Draw(ourShader);
+
+        ourShader.setMat4("model", model_building1);
+        building1.Draw(ourShader);
+        ourShader.setMat4("model", model_building2);
+        building2.Draw(ourShader);
 
         ourShader.setMat4("model", model_floor);
         floor.Draw(ourShader);
